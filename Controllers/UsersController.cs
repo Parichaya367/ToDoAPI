@@ -22,7 +22,7 @@ public class UsersController : ControllerBase
     {
         var db = new ToDoDbContext();
 
-        var users = from a in db.User select a;
+        var users = from a in db.User select new { a.Id };
         if (!users.Any()) return NoContent();
 
         return Ok(users);
@@ -37,7 +37,7 @@ public class UsersController : ControllerBase
         var user = db.User.Find(id);
         if (user == null) return NotFound();
 
-        return Ok(user);
+        return Ok(user.Id);
     }
 
     [HttpPost]

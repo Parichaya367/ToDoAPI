@@ -16,12 +16,13 @@ public class ActivitiesController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
+    [HttpGet] //HttpGet HttpPost HttpPut HttpDelete
     [Authorize(Roles = "user")]
     public IActionResult Get()
     {
         var db = new ToDoDbContext();
         var activities = from a in db.Activity where a.UserId.Equals(User.Identity.Name) select a;
+        //var activities = from a in db.Activity select a; //Select * จาก activity
         if (!activities.Any()) return NoContent();
 
         return Ok(activities);
@@ -35,7 +36,7 @@ public class ActivitiesController : ControllerBase
         var db = new ToDoDbContext();
 
         var activity = db.Activity.Find(id);
-        if (activity == null) return NotFound();
+        if (activity == null) return NoContent();
 
         return Ok(activity);
     }
@@ -52,6 +53,10 @@ public class ActivitiesController : ControllerBase
             Name = data.Name,
             When = data.When
         };
+        // var activity = new Models.Activity();
+        // activity.UserId = data.UserId;
+        // activity.Name = data.Name;
+        // activity.When = data.When;
 
         db.Activity.Add(activity);
         db.SaveChanges();
@@ -65,9 +70,13 @@ public class ActivitiesController : ControllerBase
     {
         var db = new ToDoDbContext();
 
+        //Find Id
         var activity = db.Activity.Find(id);
         if (activity == null) return NotFound();
         activity.UserId = User.Identity.Name;
+
+        //Put ค่าใหม่ ลงไป เท่าที่ต้องการจะแก้
+        //activity.UserId = data.UserId;
         if (data.Name == null) return BadRequest("Name can't be null");
         activity.Name = data.Name;
         activity.When = data.When;

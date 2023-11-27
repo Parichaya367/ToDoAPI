@@ -28,7 +28,12 @@ public class TokensController : ControllerBase
     {
         var db = new ToDoDbContext();
         var user = db.User.Find(data.Id);
-        if (user == null) return Unauthorized();
+        if (user == null)
+        {
+            Console.Write("hello");
+            return Unauthorized();
+        }
+
 
         string hash = Convert.ToBase64String(
             KeyDerivation.Pbkdf2(
